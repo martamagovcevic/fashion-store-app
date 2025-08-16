@@ -1,3 +1,4 @@
+import Button from "./Button"
 
 const ProductCard = ({product}) => {
   return (
@@ -10,9 +11,11 @@ const ProductCard = ({product}) => {
         <h3 className="text-lg font-semibold text-gray-800">
         {product.name}
       </h3>
-            <p className="text-gray-600 mt-1">
+            <p className="text-gray-600 mt-1 mb-3">
         {product.price}
+  
       </p>
+      <Button innerText="Buy Now"/>
 
     </div>
   )
