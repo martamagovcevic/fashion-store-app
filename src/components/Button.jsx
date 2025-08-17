@@ -1,8 +1,8 @@
 import React from 'react'
 
-const Button = ({innerText}) => {
+const Button = ({innerText, onClick, className}) => {
   return (
-      <button className="bg-black text-white px-8 py-3 text-sm font-semibold hover:bg-gray-800 transition-colors duration-300">
+      <button onClick={onClick}  className={`bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition ${className}`}>
         {innerText}
         </button>
   )

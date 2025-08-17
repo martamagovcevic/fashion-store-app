@@ -1,38 +1,41 @@
-import Header from "../components/Header"
-import ProductCard from "../components/ProductCard"
-import Footer from "../components/Footer"
-import { useState, useEffect } from "react"
+import Header from "../components/Header";
+import ProductCard from "../components/ProductCard";
+import Footer from "../components/Footer";
+import { useState, useEffect } from "react";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-useEffect(() => {
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch("https://fakestoreapi.com/products/category/women's clothing");
-      if (!response.ok) throw new Error("Error fetching products");
-      const data = await response.json();
-      setProducts(data);        
-      setFilteredProducts(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchProducts();
-}, []);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+       
 
+        const res = await fetch("https://api.escuelajs.co/api/v1/products?offset=1&limit=60");
+const data = await res.json();
+        const filteredData = data.filter(item =>
+          typeof item.category?.name === "string" &&
+          item.category.name.toLowerCase() === "clothes" || item.category.name.toLowerCase()==="shoes" || item.category.name.toLowerCase()==="accessories"
+        );
 
+        setProducts(filteredData);
+        setFilteredProducts(filteredData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    const filtered = products.filter((product) =>
-      product.title.toLowerCase().includes(query.toLowerCase())
+    fetchProducts();
+  }, []);
+
+  const handleSearch = query => {
+    const filtered = products.filter(p =>
+      p.title.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredProducts(filtered);
   };
@@ -40,20 +43,34 @@ useEffect(() => {
   return (
     <>
       <Header onSearch={handleSearch} />
+
       <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold mb-6">Our Products</h2>
-        {loading && <p>Loading products...</p>}
-        {error && <p className="text-red-500">{error}</p>}
+        <h2 className="text-3xl font-bold mb-6 text-center">Our Products</h2>
+     {loading && (
+  <div className="flex justify-center items-center py-6">
+    <div className="w-8 h-8 border-4 border-gray-300 border-t-[#e75480] rounded-full animate-spin"></div>
+  </div>
+)}
+        {error && <p className="text-red-500 text-center">{error}</p>}
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {filteredProducts.map(product => (
+            <ProductCard key={product.id} product={{
+              id: product.id,
+              title: product.title,
+              price: product.price,
+              image: product.images?.[0] || ""
+            }} />
           ))}
         </div>
-        {filteredProducts.length === 0 && !loading && <p>No products found.</p>}
+        {!loading && filteredProducts.length === 0 && (
+          <p className="text-center mt-6">No products found.</p>
+        )}
       </section>
-      <Footer/>
+
+      <Footer />
     </>
-  )
-}
+  );
+};
 
 export default Products;

@@ -11,24 +11,21 @@ function App() {
 
   return (
     <>
-    <Products/>
-    </>
-        // <Router>
+       <Router>
 
-    // <main>
+   <main>
 
-    // //   <Routes>
-    // //     <Route  path='/' element={<Home/>}/>
-    // <Route path="*" element={<NotFoundPage />} />
+    <Routes>
+        <Route  path='/' element={<Home/>}/>
+   <Route path="*" element={<NotFoundPage />} />
 
-    // //     <Route  path='/products' element={<Products/>} />
-    // //     <Route  path='/product/:id' element={<ProductDetails/>} />
-    // //     <Route  path='/loyalty' element={<Loyalty/>}/>
-    // //   </Routes>
-    // </main>
+   <Route  path='/products' element={<Products/>} />
+      <Route  path='/products/:id' element={<ProductDetails/>} />
+   <Route  path='/loyalty' element={<Loyalty/>}/>
+    </Routes>
+    </main>
    
-    // </Router>
-  )
+   </Router> 
+  </>)
 }
-
 export default App
