@@ -1,18 +1,20 @@
 import Header from '../components/Header'
 import Button from '../components/Button'
 import Footer from '../components/Footer'
-import { useParams, Link, useLocation } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { priceFormat } from '../utils/priceFormat'
+import Modal from '../components/Modal'
+
 
 const ProductDetails = () => {
   const { id } = useParams()
-  const location = useLocation()
-  const searchParams = new URLSearchParams(location.search)
-  const source = searchParams.get('source') || 'fakestore' // default fakestore
 
-  const [product, setProduct] = useState(null)
-  const [loading, setLoading] = useState(true)
+
+
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
 useEffect(() => {
   const fetchProduct = async () => {
@@ -56,6 +58,10 @@ useEffect(() => {
   fetchProduct()
 }, [id])
 
+  const handleOrder = () => {
+    setIsModalOpen(true)
+  }
+
   if (loading) return <p className="text-center py-20">Loading product details...</p>
   if (!product) return <p className="text-center py-20">Product not found.</p>
 
@@ -88,6 +94,7 @@ useEffect(() => {
               innerText="Order Now"
               className="bg-black text-white px-6 py-3 rounded-lg w-full md:w-auto 
                          transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                         onClick={handleOrder}
             />
           </div>
         </div>
@@ -95,6 +102,12 @@ useEffect(() => {
 
       <Footer />
 
+   <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Congratulations!"
+        message="You have successfully placed your order."
+      />
       <style>
         {`
           @keyframes fadeIn {
