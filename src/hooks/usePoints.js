@@ -16,3 +16,4 @@ export const usePoints = () => {
 
   return [points, addPoints];
 };
+

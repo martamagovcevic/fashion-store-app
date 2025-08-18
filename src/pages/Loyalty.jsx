@@ -3,13 +3,14 @@ import Footer from "../components/Footer";
 import Button from "../components/Button";
 import { usePoints } from "../hooks/usePoints";
 import { useState } from "react";
+import NavBar from "../components/NavBar";
 
 const Loyalty = () => {
   const [points, addPoints] = usePoints();
   const [animate, setAnimate] = useState(false);
 
   const handleAddPoints = () => {
-    addPoints(10); 
+    addPoints(10);
     setAnimate(true);
     setTimeout(() => setAnimate(false), 300);
   };
@@ -28,7 +29,6 @@ const Loyalty = () => {
       <Header />
       <section className="container mx-auto px-4 py-16 flex flex-col items-center gap-8">
         <h2 className="text-3xl font-bold">Your Loyalty Points</h2>
-
         <p
           className={`text-gray-700 text-2xl transition-transform duration-300 ${
             animate ? "scale-125 text-black font-bold" : ""
@@ -36,7 +36,6 @@ const Loyalty = () => {
         >
           {points} points
         </p>
-
         <div className="w-full max-w-md bg-gray-200 rounded-full h-4 mt-2">
           <div
             className="bg-black h-4 rounded-full transition-all duration-500"
@@ -44,7 +43,7 @@ const Loyalty = () => {
           ></div>
         </div>
         <p className="text-gray-600 mt-2">Next reward at {nextReward} points</p>
-
+        
         <Button
           innerText="Earn More Points"
           onClick={handleAddPoints}
@@ -56,7 +55,9 @@ const Loyalty = () => {
             <div
               key={idx}
               className={`w-40 bg-gray-100 p-4 rounded-lg shadow text-center transition-transform duration-300 ${
-                points >= reward.required ? "scale-105 border-2 border-black" : ""
+                points >= reward.required
+                  ? "scale-105 border-2 border-black"
+                  : ""
               }`}
             >
               <p className="font-semibold">{reward.title}</p>
@@ -67,6 +68,7 @@ const Loyalty = () => {
           ))}
         </div>
       </section>
+      <NavBar/>
       <Footer />
     </>
   );

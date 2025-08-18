@@ -17,7 +17,9 @@ const Header = ({ onSearch }) => {
 
         <div
           className={`absolute top-30 right-0 w-full md:w-1/3 bg-white p-4 rounded-b-lg shadow-lg transition-all duration-300 ease-in-out z-50 ${
-            showSearch ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-10 pointer-events-none"
+            showSearch
+              ? "opacity-100 translate-y-0 pointer-events-auto"
+              : "opacity-0 -translate-y-10 pointer-events-none"
           }`}
         >
           <SearchBar onSearch={onSearch} />

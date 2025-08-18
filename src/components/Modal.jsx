@@ -1,4 +1,4 @@
-const Modal = ({ isOpen, onClose, title, message }) => {
+const Modal = ({ isOpen, onClose, title, message, btnText }) => {
   if (!isOpen) return null;
 
   return (
@@ -10,7 +10,7 @@ const Modal = ({ isOpen, onClose, title, message }) => {
           onClick={onClose}
           className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition"
         >
-          Close
+          {btnText}
         </button>
       </div>
     </div>

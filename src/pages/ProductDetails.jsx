@@ -1,48 +1,54 @@
 import Header from "../components/Header";
 import Button from "../components/Button";
 import Footer from "../components/Footer";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { priceFormat } from "../utils/priceFormat";
 import Modal from "../components/Modal";
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const location = useLocation();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+
+  const searchParams = new URLSearchParams(location.search);
+  const source = searchParams.get("source") || "fakestore";
 
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
         let data = null;
-        if (id <= 20) {
+
+        if (source === "fakestore") {
           const res = await fetch(`https://fakestoreapi.com/products/${id}`);
-          data = await res.json();
+          if (!res.ok) throw new Error("Product not found");
+          const d = await res.json();
           data = {
-            id: data.id,
-            title: data.title,
-            description: data.description,
-            price: data.price,
-            image: data.image,
-            category: data.category,
+            id: d.id,
+            title: d.title,
+            description: d.description,
+            price: d.price,
+            image: d.image,
+            category: d.category,
+          };
+        } else if (source === "escuelajs") {
+          const res = await fetch(`https://api.escuelajs.co/api/v1/products/${id}`);
+          if (!res.ok) throw new Error("Product not found");
+          const d = await res.json();
+          data = {
+            id: d.id,
+            title: d.title,
+            description: d.description,
+            price: d.price,
+            image: Array.isArray(d.images) ? d.images[0] : d.images,
+            category: d.category?.name || "",
           };
         } else {
-          const res = await fetch(
-            `https://api.escuelajs.co/api/v1/products/${id}`
-          );
-          if (!res.ok) throw new Error("Product not found");
-          const escData = await res.json();
-          data = {
-            id: escData.id,
-            title: escData.title,
-            description: escData.description,
-            price: escData.price,
-            image: escData.images[0],
-            category: escData.category?.name || "",
-          };
+          throw new Error("Unknown source");
         }
 
         setProduct(data);
@@ -54,7 +60,7 @@ const ProductDetails = () => {
       }
     };
     fetchProduct();
-  }, [id]);
+  }, [id, source]);
 
   const handleOrder = () => {
     setIsModalOpen(true);
@@ -70,14 +76,9 @@ const ProductDetails = () => {
 
       <section className="container mx-auto px-4 py-16">
         <div className="text-gray-500 text-sm mb-6">
-          <Link to="/" className="hover:underline">
-            Home
-          </Link>{" "}
-          &rarr;{" "}
-          <Link to="/products" className="hover:underline">
-            Products
-          </Link>{" "}
-          &rarr; <span>{product.title}</span>
+          <Link to="/" className="hover:underline">Home</Link>{" "}
+          <Link to="/products" className="hover:underline">Products</Link>{" "}
+         <span>{product.title}</span>
         </div>
 
         <div className="flex flex-col md:flex-row gap-10 items-start">
@@ -111,7 +112,7 @@ const ProductDetails = () => {
               innerText="Go back"
               className="bg-black text-white px-6 py-3 rounded-lg w-full md:w-auto 
                          transform transition-all duration-300 hover:scale-105 hover:shadow-xl ml-10"
-                         onClick={()=>navigate(-1)}
+              onClick={() => navigate(-1)}
             />
           </div>
         </div>
@@ -124,7 +125,9 @@ const ProductDetails = () => {
         onClose={() => setIsModalOpen(false)}
         title="Congratulations!"
         message="You have successfully placed your order."
+        btnText="Close"
       />
+
       <style>
         {`
           @keyframes fadeIn {

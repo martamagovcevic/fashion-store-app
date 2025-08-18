@@ -12,14 +12,14 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-       
-
-        const res = await fetch("https://api.escuelajs.co/api/v1/products?offset=1&limit=60");
-const data = await res.json();
-        const filteredData = data.filter(item =>
-          typeof item.category?.name === "string" &&
-          item.category.name.toLowerCase() === "clothes" || item.category.name.toLowerCase()==="shoes" || item.category.name.toLowerCase()==="accessories"
+        const res = await fetch(
+          "https://api.escuelajs.co/api/v1/products?offset=1&limit=40"
         );
+        const data = await res.json();
+        const filteredData = data.filter((item) => {
+          const cat = item?.category?.name?.toLowerCase() || "";
+          return ["clothes", "shoes", "accessories"].includes(cat);
+        });
 
         setProducts(filteredData);
         setFilteredProducts(filteredData);
@@ -33,8 +33,8 @@ const data = await res.json();
     fetchProducts();
   }, []);
 
-  const handleSearch = query => {
-    const filtered = products.filter(p =>
+  const handleSearch = (query) => {
+    const filtered = products.filter((p) =>
       p.title.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredProducts(filtered);
@@ -46,21 +46,25 @@ const data = await res.json();
 
       <section className="container mx-auto px-4 py-16">
         <h2 className="text-3xl font-bold mb-6 text-center">Our Products</h2>
-     {loading && (
-  <div className="flex justify-center items-center py-6">
-    <div className="w-8 h-8 border-4 border-gray-300 border-t-[#e75480] rounded-full animate-spin"></div>
-  </div>
-)}
+        {loading && (
+          <div className="flex justify-center items-center py-6">
+            <div className="w-8 h-8 border-4 border-gray-300 border-t-[#e75480] rounded-full animate-spin"></div>
+          </div>
+        )}
         {error && <p className="text-red-500 text-center">{error}</p>}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {filteredProducts.map(product => (
-            <ProductCard key={product.id} product={{
-              id: product.id,
-              title: product.title,
-              price: product.price,
-              image: product.images?.[0] || ""
-            }} />
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={{
+                id: product.id,
+                title: product.title,
+                price: product.price,
+                image: product.images?.[0] || "",
+              }}
+              source="escuelajs"
+            />
           ))}
         </div>
         {!loading && filteredProducts.length === 0 && (

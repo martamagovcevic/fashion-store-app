@@ -5,13 +5,13 @@ const SearchBar = ({ onSearch }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSearch(query); 
+    onSearch(query);
   };
 
   const handleChange = (event) => {
     const value = event.target.value;
     setQuery(value);
-    onSearch(value); 
+    onSearch(value);
   };
 
   return (
